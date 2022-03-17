@@ -3,12 +3,12 @@ import { Navigation }  from './navigation'
 import { useAuth } from './hooks/auth.hook';
 import { AuthContext } from './context/AuthContext';
 export default function App() {
-    const { login, logout, token, userId, isReady } = useAuth()
+    const { login, logout, token, userId } = useAuth()
     const isLogin = !!token
     const MainNavigation = Navigation(isLogin, logout)
 
     return (
-        <AuthContext.Provider value={{ login, logout, token, userId, isReady }}>
+        <AuthContext.Provider value={{ login, logout, token, userId }}>
           { MainNavigation }
         </AuthContext.Provider>
     );

@@ -57,6 +57,22 @@ const Home = () => {
     [getTasks]
   );
 
+  const completedTask = useCallback( async (id) => {
+    try {
+        await axios.put(`http://172.20.10.2:5000/api/todo/complete/${id}`, {id}, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then((response) => {
+            setTextItems([...textItems], response.data)
+            fetchTasks()
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}, [setTextItems, fetchTasks])
+
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
@@ -64,35 +80,32 @@ const Home = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        {/*Today's Task*/}
         <View style={styles.tasksWrapper}>
           <TextTitle>To do list</TextTitle>
           <View style={styles.items}>
-            {/* This is where the tasks will go!*/}
-            <ScrollView contentContainerStyle={{ flex: 1 }}>
-              {textItems.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => deleteTask(item._id)}
-                  >
-                    <Tasks text={item.text} />
-                  </TouchableOpacity>
-                );
-              })}
+            <ScrollView>
+              {
+                textItems.map((item, index) => {
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                    >
+                      <Tasks 
+                        onCompleted={() => completedTask(item._id)}
+                        completed={item.completed} 
+                        onDelete={() => deleteTask(item._id)} 
+                        text={item.text} 
+                      />
+                    </TouchableOpacity>
+                  );
+                })
+              }
             </ScrollView>
           </View>
         </View>
-        {/*Write a task */}
         <KeyboardAvoidingView
           behavior="padding"
           keyboardVerticalOffset={headerHeight}
-          // style={styles.writeTaskWrapper}
-          contentContainerStyle={{
-            paddingBottom: 20,
-            marginBottom: 40,
-            flexDirection: "row",
-          }}
         >
           <View
             style={{
@@ -131,16 +144,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     flex: 1,
   },
-  writeTaskWrapper: {
-    // position: "absolute",
-    // bottom: 60,
-    width: "100%",
-    paddingBottom: 50,
-
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   input: {
     marginLeft: 20,
     paddingVertical: 15,
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
   },
   addText: {
     fontSize: 22,
-    color: "blue",
+    color: "#55BCF6",
   },
 });
 export default Home;

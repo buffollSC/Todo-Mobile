@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const useAuth = () => {
     const [token, setToken] = useState(null)
     const [userId, setUserId] = useState(null)
-    const [isReady, setIsReady] = useState(false)
 
     const login =  useCallback((jwtToken, id) => {
         setToken(jwtToken)
@@ -22,19 +21,18 @@ export const useAuth = () => {
         AsyncStorage.removeItem('userData')
     }
 
-    useEffect(() => {
+    useEffect( async() => {
         try {
-            const jsonParseTokenId = AsyncStorage.getItem('userData')
+            const jsonParseTokenId = await AsyncStorage.getItem('userData')
 
-            if(jsonParseTokenId != null) {
+            if(!jsonParseTokenId) {
                 JSON.parse(jsonParseTokenId)
                 login(jsonParseTokenId.token, jsonParseTokenId.userId)
-                setIsReady(true)
             }
             
         } catch (error) {
             console.log(error)
         }
     }, [])
-    return { login, logout, token, userId, isReady }
+    return { login, logout, token, userId }
 }

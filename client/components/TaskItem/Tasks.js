@@ -1,15 +1,26 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Feather } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 export const Tasks = (props) => {
     return (
-        <View style={styles.item}>
+        <TouchableOpacity onPress={props.onCompleted}>
+            <View style={styles.item}> 
             <View style={styles.itemLeft}>
-                <View style={styles.square}></View>
-                <Text style={styles.itemText}>{props.text}</Text>
+                <View style={styles.square}>
+                    {
+                        props.completed 
+                        ? <AntDesign name="check" size={24} color="#FFF" />
+                        : null
+                    }
+                </View>
+                <Text style={props.completed ? styles.completed : styles.itemText}>{props.text}</Text>
             </View>
-            <View style={styles.circular}></View>
+            <Feather onPress={props.onDelete} style={styles.icon} name="delete" />
         </View>
+        </TouchableOpacity>
+        
     )
 }
 
@@ -38,7 +49,11 @@ const styles = StyleSheet.create({
         marginRight: 15 
     },
     itemText: {
-        maxWidth: '80%'
+        maxWidth: '80%', 
+    },
+    completed: {
+        maxWidth: '80%',
+        textDecorationLine: 'line-through'
     },
     circular: {
         width: 12, 
@@ -47,4 +62,13 @@ const styles = StyleSheet.create({
         borderWidth: 1.5,
         borderRadius: 6
     },
+    icon: { 
+        fontSize: 24, 
+        color: "#55BCF6",
+    },
+    iconActive: {
+        fontSize: 25,
+        color:'red'
+    }
+    
 });

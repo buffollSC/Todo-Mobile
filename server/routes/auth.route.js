@@ -6,8 +6,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 router.post("/registration",
   [
-    check("email", "Некорректный email").isEmail(),
-    check("password", "Некорректный пароль").isLength({ min: 6 }),
+    check("email", "Incorrect email").isEmail(),
+    check("password", "Incorrect пароль").isLength({ min: 6 }),
   ],
   async (req, res) => {
     try {
@@ -15,14 +15,14 @@ router.post("/registration",
       if (!errors.isEmpty()) {
         return res.status(400).json({
           errors: errors.array(),
-          message: "Некорректные данные при регистрации",
+          message: "Incorrect data during registration",
         });
       }
       const { email, password } = req.body;
       const isUser = await User.findOne({ email });
 
       if (isUser) {
-        return res.status(409).json({ message: "Данный Email уже занят." });
+        return res.status(409).json({ message: "This Email is already in use." });
       }
       const hashPassword = await bcrypt.hash(password, 12);
       const user = new User({
@@ -30,7 +30,7 @@ router.post("/registration",
         password: hashPassword,
       });
       await user.save();
-      res.status(201).json({ message: "Пользователь создан." });
+      res.status(201).json({ message: "User created." });
     } catch (error) {
       console.log(error);
     }
@@ -38,8 +38,8 @@ router.post("/registration",
 );
 router.post("/login",
   [
-    check("email", "Некорректный email").isEmail(),
-    check("password", "Некорректный пароль").exists(),
+    check("email", "Incorrect email").isEmail(),
+    check("password", "Incorrect пароль").exists(),
   ],
   async (req, res) => {
     try {
@@ -48,7 +48,7 @@ router.post("/login",
       if (!errors.isEmpty()) {
         return res.status(400).json({
           errors: errors.array(),
-          message: "Некорректные данные при авторизации",
+          message: "Incorrect data during authorization",
         });
       }
       const { email, password } = req.body;
@@ -56,7 +56,7 @@ router.post("/login",
 
       if (!user) {
         return res.status(400).json({
-          message: "Данного email нет в базе данных!",
+          message: "This email is not in the database!",
         });
       }
 
@@ -75,7 +75,7 @@ router.post("/login",
           });
         } else {
             return res.status(400).json({
-            message: "Пароли не совпадают!",
+            message: "Passwords do not match!",
             });
         }
       });
