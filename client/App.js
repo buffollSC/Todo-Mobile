@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigation }  from './navigation'
-import { useAuth } from './hooks/auth.hook';
+import { useAuth } from './hooks/useAuth';
 import { AuthContext } from './context/AuthContext';
 export default function App() {
     const { login, logout, token, userId } = useAuth()

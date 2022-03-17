@@ -4,7 +4,8 @@ const User = require("../models/User");
 const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-router.post("/registration",
+router.post(
+  "/registration",
   [
     check("email", "Incorrect email").isEmail(),
     check("password", "Incorrect пароль").isLength({ min: 6 }),
@@ -22,7 +23,9 @@ router.post("/registration",
       const isUser = await User.findOne({ email });
 
       if (isUser) {
-        return res.status(409).json({ message: "This Email is already in use." });
+        return res
+          .status(409)
+          .json({ message: "This Email is already in use." });
       }
       const hashPassword = await bcrypt.hash(password, 12);
       const user = new User({
@@ -36,7 +39,8 @@ router.post("/registration",
     }
   }
 );
-router.post("/login",
+router.post(
+  "/login",
   [
     check("email", "Incorrect email").isEmail(),
     check("password", "Incorrect пароль").exists(),
@@ -44,7 +48,7 @@ router.post("/login",
   async (req, res) => {
     try {
       const errors = validationResult(req);
-      
+
       if (!errors.isEmpty()) {
         return res.status(400).json({
           errors: errors.array(),
@@ -74,9 +78,9 @@ router.post("/login",
             userId: user.id,
           });
         } else {
-            return res.status(400).json({
+          return res.status(400).json({
             message: "Passwords do not match!",
-            });
+          });
         }
       });
     } catch (error) {

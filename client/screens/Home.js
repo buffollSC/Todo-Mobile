@@ -36,7 +36,6 @@ const Home = () => {
     setText('')
     fetchTasks()
   })
-
   const deleteTask = useCallback(
     async (id) => {
       try {

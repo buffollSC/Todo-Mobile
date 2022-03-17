@@ -8,7 +8,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useFetching } from "../hooks/useFetching";
 import { loginHandler } from "../API/loginHandler";
 
-export const Login = ({ navigation }) => {
+const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useContext(AuthContext);
@@ -17,30 +17,26 @@ export const Login = ({ navigation }) => {
     navigation.navigate("Registration");
   };
 
-  const [fetchLogin, fetchLoginError] = useFetching(async() => {
-    const response = await loginHandler(email, password)
-    login(response.data.token, response.data.userId)
-  })
-  
+  const [fetchLogin, fetchLoginError] = useFetching(async () => {
+    const response = await loginHandler(email, password);
+    login(response.data.token, response.data.userId);
+  });
+
   return (
     <View>
       <TextTitle>Authorization</TextTitle>
-      <Field 
-        value={ email } 
-        onChangeText={setEmail} 
-        placeholder="Email.." 
-      />
+      <Field value={email} onChangeText={setEmail} placeholder="Email.." />
       <Field
-        secureTextEntry={ true }
-        value={ password }
+        secureTextEntry={true}
+        value={password}
         type="password"
         onChangeText={setPassword}
         placeholder="Password.."
       />
-      <Error>{fetchLoginError ?  `${fetchLoginError}` : "" }</Error>
-      <MyButton title="Authorization" onPress={ fetchLogin } />
-      <Button title="No account?" onPress={ registrationPage } />
+      <Error>{fetchLoginError ? `${fetchLoginError}` : ""}</Error>
+      <MyButton title="Sign in" onPress={fetchLogin} />
+      <Button title="No account?" onPress={registrationPage} />
     </View>
   );
 };
-export default Login
+export default Login;

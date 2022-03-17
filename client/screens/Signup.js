@@ -37,7 +37,7 @@ const Signup = ({ navigation }) => {
         placeholder="Password.."
       />
       <Error>{fetchRegistrationError ? `${ fetchRegistrationError }` : ""}</Error>
-      <MyButton title="Registration" onPress={ fetchRegistration } />
+      <MyButton title="Sign up" onPress={ fetchRegistration } />
     </View>
   );
 };
