@@ -14,6 +14,9 @@ import { Tasks } from "../components/TaskItem/Tasks";
 import Field from "../components/UI/Field";
 import TextTitle from "../components/UI/TextTitle";
 import { AuthContext } from "../context/AuthContext";
+import { useFetching } from "../hooks/useFetching";
+import { getTasks } from "../API/getTasks";
+import { createTask } from "../API/createTask";
 
 const Home = () => {
   const [text, setText] = useState("");
@@ -21,44 +24,18 @@ const Home = () => {
   const { userId } = useContext(AuthContext);
   const headerHeight = useHeaderHeight();
 
-  const getTasks = async () => {
-    try {
-      await axios
-        .get("http://172.20.10.2:5000/api/todo", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          params: { userId },
-        })
-        .then((response) => {
-          setTextItems(response.data);
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  const createTask = useCallback(async () => {
-    if (!text) return;
-    try {
-      await axios
-        .post("http://172.20.10.2:5000/api/todo/add",
-          { text, userId },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          setTextItems([...textItems], response.data);
-          setText("");
-          getTasks();
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  }, [text, userId, textItems]);
+  const [fetchTasks, fetchError] = useFetching(async () => {
+    const response = await getTasks(userId)
+    setTextItems(response.data)
+  })
+
+  const [fetchCreateTask, fetchCreateTaskError] = useFetching(async () => {
+    const response = await createTask(text, userId)
+    setTextItems([...textItems], response.data)
+    setText('')
+    fetchTasks()
+  })
 
   const deleteTask = useCallback(
     async (id) => {
@@ -81,8 +58,8 @@ const Home = () => {
   );
 
   useEffect(() => {
-    getTasks();
-  }, [getTasks]);
+    fetchTasks();
+  }, [fetchTasks]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -130,7 +107,7 @@ const Home = () => {
               value={text}
               onChangeText={setText}
             />
-            <TouchableOpacity onPress={createTask}>
+            <TouchableOpacity onPress={fetchCreateTask}>
               <View style={styles.addWrapper}>
                 <Text style={styles.addText}>+</Text>
               </View>
