@@ -8,6 +8,6 @@ export const loginHandler = async (email, password) => {
         "Content-Type": "application/json",
       },
     }
-  );
+  )
   return response
 };
